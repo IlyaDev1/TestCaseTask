@@ -90,3 +90,14 @@ correct_schedule_by_url = {
         },
     ],
 }
+
+correct_schedule_by_dict = {
+    "days": [
+        {"id": 1, "date": date(2024, 10, 10), "start": time(9, 0), "end": time(18, 0)},
+        {"id": 2, "date": date(2024, 10, 11), "start": time(8, 0), "end": time(17, 0)},
+    ],
+    "timeslots": [
+        {"id": 1, "day_id": 1, "start": time(11, 0), "end": time(12, 0)},
+        {"id": 3, "day_id": 2, "start": time(9, 30), "end": time(16, 0)},
+    ],
+}
