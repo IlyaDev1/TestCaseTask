@@ -61,7 +61,9 @@ class SchedulerInterface(ABC):
         ...
 
     @abstractmethod
-    def find_slot_for_duration(self, duration_minutes: int = 10) -> tuple[str, str, str]:
+    def find_slot_for_duration(
+        self, duration_minutes: int = 10
+    ) -> tuple[str, str, str]:
         """Находит первое свободное время для заявки указанной длительности.
 
         Args:
