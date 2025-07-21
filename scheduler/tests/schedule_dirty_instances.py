@@ -1,4 +1,4 @@
-correct_dirty_schedule = {
+correct_dirty_schedule = {  # Объект не обработанного расписания
     "days": [
         {"id": 1, "date": "2024-10-10", "start": "09:00", "end": "18:00"},
         {"id": 2, "date": "2024-10-11", "start": "08:00", "end": "17:00"},
