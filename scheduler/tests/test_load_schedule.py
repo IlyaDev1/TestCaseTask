@@ -7,11 +7,13 @@ from scheduler.impl.schedule_loader.exceptions import (
     LoadByURLError,
     ScheduleKeysError,
     ScheduleValuesError,
+    TimeSlotStructureError,
     URLOrDataOnlyError,
 )
 from scheduler.tests.schedules.schedule_dirty_instances import (
     correct_dirty_schedule,
     schedule_with_bad_keys,
+    schedule_with_timeslot_beyond_work_time,
     scheduler_with_not_lists,
 )
 from scheduler.tests.schedules.schedule_instances import (
@@ -72,3 +74,10 @@ def test_values_not_lists():
 
     with pytest.raises(ScheduleValuesError, match="days and timeslots must be lists"):
         Scheduler(data=scheduler_with_not_lists)
+
+
+def test_timeslots_beyond_work_time():
+    """Тест проверяет вызов ошибки TimeSlotStructureError, если таймслот вне рабочего времени."""
+
+    with pytest.raises(TimeSlotStructureError, match="outside of work hours"):
+        Scheduler(data=schedule_with_timeslot_beyond_work_time)

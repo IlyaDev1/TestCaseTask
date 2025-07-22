@@ -132,3 +132,22 @@ class ScheduleValidator:
             )
 
         return validated_timeslots
+
+    @staticmethod
+    def validate_timeslots_within_work_hours(timeslots, days_by_id):
+        """Проверяет, что таймслоты находятся в пределах рабочего времени дня.
+
+        Args:
+            timeslots: Список таймслотов.
+            days_by_id: Словарь с данными дней по id.
+
+        Raises:
+            TimeSlotStructureError: Если таймслот выходит за рамки рабочего времени дня.
+        """
+        for ts in timeslots:
+            day_id = ts["day_id"]
+            day = days_by_id[day_id]
+            if ts["start"] < day["start"] or ts["end"] > day["end"]:
+                raise TimeSlotStructureError(
+                    f"Timeslot {ts} is outside of work hours for day {day_id}"
+                )

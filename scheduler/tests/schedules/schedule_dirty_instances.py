@@ -36,3 +36,10 @@ schedule_with_bad_keys: dict = {"days": [], "timeslsssss": []}
 
 
 scheduler_with_not_lists: dict = {"days": [], "timeslots": 1}
+
+schedule_with_timeslot_beyond_work_time: dict = {
+    "days": [
+        {"id": 1, "date": "2024-10-10", "start": "11:00", "end": "12:00"},
+    ],
+    "timeslots": [{"id": 1, "day_id": 1, "start": "13:00", "end": "15:00"}],
+}
