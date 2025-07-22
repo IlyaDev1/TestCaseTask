@@ -1,4 +1,4 @@
-from httpx import RequestError, get
+from httpx import HTTPError, get
 
 from .exceptions import (
     EmptyLoadDataError,
@@ -57,9 +57,10 @@ def url_loader(url: str) -> dict[str, list]:
     """
     try:
         response = get(url)
+        response.raise_for_status()
         data = response.json()
         return check_and_make_schedule_structure(data)
-    except RequestError as e:
+    except HTTPError as e:
         raise LoadByURLError(f"Failed to load schedule from URL: {e}")
 
 

@@ -1,8 +1,10 @@
 import pytest
+from pytest_httpx import HTTPXMock
 
 from scheduler import Scheduler
 from scheduler.impl.schedule_loader.exceptions import (
     EmptyLoadDataError,
+    LoadByURLError,
     URLOrDataOnlyError,
 )
 from scheduler.tests.schedules.schedule_dirty_instances import correct_dirty_schedule
@@ -37,3 +39,16 @@ def test_url_and_data_exist():
 
     with pytest.raises(URLOrDataOnlyError, match="Provide only one of url or data"):
         Scheduler(url="https", data={"data": [dict()]})
+
+
+def test_load_by_url_error(httpx_mock: HTTPXMock):
+    """Тест проверяет вызов ошибки LoadByURLError"""
+
+    httpx_mock.add_response(
+        method="GET",
+        url="https://ofc-test-01.tspb.su/test-task/",
+        status_code=404,
+    )
+
+    with pytest.raises(LoadByURLError, match="Failed to load schedule from URL:"):
+        Scheduler(url="https://ofc-test-01.tspb.su/test-task/")
