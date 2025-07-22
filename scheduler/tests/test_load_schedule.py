@@ -1,7 +1,10 @@
 import pytest
 
 from scheduler import Scheduler
-from scheduler.impl.schedule_loader.exceptions import EmptyLoadDataError
+from scheduler.impl.schedule_loader.exceptions import (
+    EmptyLoadDataError,
+    URLOrDataOnlyError,
+)
 from scheduler.tests.schedules.schedule_dirty_instances import correct_dirty_schedule
 from scheduler.tests.schedules.schedule_instances import (
     correct_schedule_by_dict,
@@ -27,3 +30,10 @@ def test_empty_args():
 
     with pytest.raises(EmptyLoadDataError, match="Either url or data must be provided"):
         Scheduler()
+
+
+def test_url_and_data_exist():
+    """Тест проверяет вызов ошибки URLOrDataOnlyError"""
+
+    with pytest.raises(URLOrDataOnlyError, match="Provide only one of url or data"):
+        Scheduler(url="https", data={"data": [dict()]})
