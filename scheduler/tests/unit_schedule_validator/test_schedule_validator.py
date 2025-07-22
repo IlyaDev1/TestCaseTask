@@ -9,6 +9,16 @@ from scheduler.impl.schedule_loader.exceptions import (
 from scheduler.impl.schedule_loader.schedule_validator import ScheduleValidator
 
 
+def test_is_keys_correct_valid():
+    assert ScheduleValidator.is_keys_correct({"days": [], "timeslots": []}) is True
+
+
+def test_is_keys_correct_invalid():
+    assert ScheduleValidator.is_keys_correct({"timeslots": [], "days": []}) is False
+    assert ScheduleValidator.is_keys_correct({"days": []}) is False
+    assert ScheduleValidator.is_keys_correct({"foo": [], "bar": []}) is False
+
+
 def test_days_validator_valid():
     days = [
         {

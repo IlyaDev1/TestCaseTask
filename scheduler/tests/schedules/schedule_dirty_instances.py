@@ -31,12 +31,6 @@ correct_dirty_schedule = {  # Объект не обработанного ра�
     ],
 }
 
-
-schedule_with_bad_keys: dict = {"days": [], "timeslsssss": []}
-
-
-scheduler_with_not_lists: dict = {"days": [], "timeslots": 1}
-
 schedule_with_timeslot_beyond_work_time: dict = {
     "days": [
         {"id": 1, "date": "2024-10-10", "start": "11:00", "end": "12:00"},

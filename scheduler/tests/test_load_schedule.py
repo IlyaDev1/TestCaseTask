@@ -12,9 +12,7 @@ from scheduler.impl.schedule_loader.exceptions import (
 )
 from scheduler.tests.schedules.schedule_dirty_instances import (
     correct_dirty_schedule,
-    schedule_with_bad_keys,
     schedule_with_timeslot_beyond_work_time,
-    scheduler_with_not_lists,
 )
 from scheduler.tests.schedules.schedule_instances import (
     correct_schedule_by_dict,
@@ -60,20 +58,6 @@ def test_load_by_url_error(httpx_mock: HTTPXMock):
 
     with pytest.raises(LoadByURLError, match="Failed to load schedule from URL:"):
         Scheduler(url="https://ofc-test-01.tspb.su/test-task/")
-
-
-def test_schedule_keys_error():
-    """Тест проверяет вызов ошибки ScheduleKeysError."""
-
-    with pytest.raises(ScheduleKeysError, match="('days', 'timeslots')"):
-        Scheduler(data=schedule_with_bad_keys)
-
-
-def test_values_not_lists():
-    """Тест проверяет вызов ошибки ScheduleValuesError."""
-
-    with pytest.raises(ScheduleValuesError, match="days and timeslots must be lists"):
-        Scheduler(data=scheduler_with_not_lists)
 
 
 def test_timeslots_beyond_work_time():
