@@ -2,9 +2,10 @@ import pytest
 from pytest_httpx import HTTPXMock
 
 from scheduler import Scheduler
-
-from .schedule_dirty_instances import correct_dirty_schedule_by_url
-from .schedule_instances import correct_schedule_by_url
+from scheduler.tests.schedules.schedule_dirty_instances import (
+    correct_dirty_schedule_by_url,
+)
+from scheduler.tests.schedules.schedule_instances import correct_schedule_by_url
 
 
 @pytest.fixture(scope="function")

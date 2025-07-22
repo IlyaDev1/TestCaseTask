@@ -2,9 +2,11 @@ import pytest
 
 from scheduler import Scheduler
 from scheduler.impl.schedule_loader.exceptions import EmptyLoadDataError
-
-from .schedule_dirty_instances import correct_dirty_schedule
-from .schedule_instances import correct_schedule_by_dict, correct_schedule_by_url
+from scheduler.tests.schedules.schedule_dirty_instances import correct_dirty_schedule
+from scheduler.tests.schedules.schedule_instances import (
+    correct_schedule_by_dict,
+    correct_schedule_by_url,
+)
 
 
 def test_correct_load_by_url(schedule_instance_by_url: Scheduler):
