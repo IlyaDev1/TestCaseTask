@@ -30,3 +30,6 @@ correct_dirty_schedule = {  # Объект не обработанного ра�
         {"id": 3, "day_id": 2, "start": "09:30", "end": "16:00"},
     ],
 }
+
+
+schedule_with_bad_keys: dict = {"days": [], "timeslsssss": []}

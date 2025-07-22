@@ -5,9 +5,13 @@ from scheduler import Scheduler
 from scheduler.impl.schedule_loader.exceptions import (
     EmptyLoadDataError,
     LoadByURLError,
+    ScheduleKeysError,
     URLOrDataOnlyError,
 )
-from scheduler.tests.schedules.schedule_dirty_instances import correct_dirty_schedule
+from scheduler.tests.schedules.schedule_dirty_instances import (
+    correct_dirty_schedule,
+    schedule_with_bad_keys,
+)
 from scheduler.tests.schedules.schedule_instances import (
     correct_schedule_by_dict,
     correct_schedule_by_url,
@@ -35,14 +39,14 @@ def test_empty_args():
 
 
 def test_url_and_data_exist():
-    """Тест проверяет вызов ошибки URLOrDataOnlyError"""
+    """Тест проверяет вызов ошибки URLOrDataOnlyError."""
 
     with pytest.raises(URLOrDataOnlyError, match="Provide only one of url or data"):
         Scheduler(url="https", data={"data": [dict()]})
 
 
 def test_load_by_url_error(httpx_mock: HTTPXMock):
-    """Тест проверяет вызов ошибки LoadByURLError"""
+    """Тест проверяет вызов ошибки LoadByURLError."""
 
     httpx_mock.add_response(
         method="GET",
@@ -52,3 +56,10 @@ def test_load_by_url_error(httpx_mock: HTTPXMock):
 
     with pytest.raises(LoadByURLError, match="Failed to load schedule from URL:"):
         Scheduler(url="https://ofc-test-01.tspb.su/test-task/")
+
+
+def test_schedule_keys_error():
+    """Тест проверяет вызов ошибки ScheduleKeysError."""
+
+    with pytest.raises(ScheduleKeysError, match="('days', 'timeslots')"):
+        Scheduler(data=schedule_with_bad_keys)
