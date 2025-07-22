@@ -134,7 +134,7 @@ class ScheduleValidator:
         return validated_timeslots
 
     @staticmethod
-    def validate_timeslots_within_work_hours(timeslots, days_by_id):
+    def validate_timeslots_within_work_hours(timeslots: dict, days_by_id: dict) -> None:
         """Проверяет, что таймслоты находятся в пределах рабочего времени дня.
 
         Args:
