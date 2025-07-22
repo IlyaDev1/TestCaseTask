@@ -33,3 +33,6 @@ correct_dirty_schedule = {  # Объект не обработанного ра�
 
 
 schedule_with_bad_keys: dict = {"days": [], "timeslsssss": []}
+
+
+scheduler_with_not_lists: dict = {"days": [], "timeslots": 1}
