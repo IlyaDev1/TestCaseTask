@@ -7,10 +7,10 @@ from .schedule_dirty_instances import correct_dirty_schedule
 from .schedule_instances import correct_schedule_by_dict, correct_schedule_by_url
 
 
-def test_correct_load_by_url(schedule_instance: Scheduler):
+def test_correct_load_by_url(schedule_instance_by_url: Scheduler):
     """Тест проверяет, что c url данные загружаются корректно."""
 
-    assert schedule_instance.schedule == correct_schedule_by_url
+    assert schedule_instance_by_url.schedule == correct_schedule_by_url
 
 
 def test_correct_load_by_dict():
@@ -20,7 +20,7 @@ def test_correct_load_by_dict():
     assert scheduler.schedule == correct_schedule_by_dict
 
 
-def test_emtpy_args():
+def test_empty_args():
     """Тест проверяет вызов ошибки EmptyLoadDataError."""
 
     with pytest.raises(EmptyLoadDataError, match="Either url or data must be provided"):
