@@ -1,6 +1,7 @@
 from ..scheduler_interface import SchedulerInterface
 from .schedule_loader import load_schedule
 from .service import get_busy_slots as service_get_busy_slots
+from .service import get_free_slots as service_get_free_slots
 
 
 class Scheduler(SchedulerInterface):
@@ -16,7 +17,10 @@ class Scheduler(SchedulerInterface):
             self.validated_days, self.validated_timeslots, date_value
         )
 
-    def get_free_slots(self, date: str) -> list[tuple[str, str]]: ...  # type: ignore
+    def get_free_slots(self, date_value: str) -> list[tuple[str, str]]:
+        return service_get_free_slots(
+            self.validated_days, self.validated_timeslots, date_value
+        )
 
     def is_available(self, date: str, start_time: str, end_time: str) -> bool: ...  # type: ignore
 
