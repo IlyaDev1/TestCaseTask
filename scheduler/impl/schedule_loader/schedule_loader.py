@@ -45,6 +45,10 @@ def check_and_make_schedule_structure(data: dict) -> dict[str, list]:
         validated_timeslots, {day["id"]: day for day in validated_days}
     )
 
+    validated_days, validated_timeslots = ScheduleValidator.sort_schedule(
+        validated_days, validated_timeslots
+    )
+
     return {"days": validated_days, "timeslots": validated_timeslots}
 
 

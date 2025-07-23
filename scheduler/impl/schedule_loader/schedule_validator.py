@@ -155,3 +155,14 @@ class ScheduleValidator:
                 raise TimeSlotStructureError(
                     f"Timeslot {ts} is outside of work hours for day {day_id}"
                 )
+
+    @staticmethod
+    def sort_schedule(
+        validated_days: list[dict], validated_timeslots: list[dict]
+    ) -> tuple[list[dict], list[dict]]:
+        """Метод сортирует расписание и по дням и по таймслотам."""
+        sorted_days = sorted(validated_days, key=lambda d: d["date"])
+        sorted_timeslots = sorted(
+            validated_timeslots, key=lambda ts: (ts["day_id"], ts["start"])
+        )
+        return sorted_days, sorted_timeslots
