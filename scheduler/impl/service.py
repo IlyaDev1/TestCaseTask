@@ -7,12 +7,25 @@ from .mappers import str_to_date, time_to_str
 def find_day_or_emtpy_list(
     target_date: date, validated_days_list: list[dict]
 ) -> dict | None:
+    """Находит день с совпадающей датой."""
     return next((d for d in validated_days_list if d["date"] == target_date), None)
 
 
 def get_busy_slots(
     validated_days: list[dict], validated_timeslots: list[dict], date_value: str
 ) -> list[tuple[str, str]]:
+    """
+    Возвращает список занятых временных промежутков на указанную дату.
+
+    Args:
+        validated_days: Список словарей с данными рабочих дней (ключи: id, date, start, end).
+        validated_timeslots: Список словарей с таймслотами (ключи: day_id, start, end).
+        date_value: Строка с датой в формате "YYYY-MM-DD".
+
+    Returns:
+        Список занятых временных промежутков в виде кортежей строк.
+        Если день не найден, возвращается пустой список.
+    """
     target_date = str_to_date(date_value)
 
     day = find_day_or_emtpy_list(target_date, validated_days)
