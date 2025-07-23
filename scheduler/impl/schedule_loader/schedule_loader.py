@@ -1,4 +1,4 @@
-from httpx import HTTPError, get
+import httpx
 
 from .exceptions import (
     EmptyLoadDataError,
@@ -52,8 +52,8 @@ def check_and_make_schedule_structure(data: dict) -> dict[str, list]:
     return {"days": validated_days, "timeslots": validated_timeslots}
 
 
-def url_loader(url: str) -> dict[str, list]:
-    """Загружает данные расписания по URL.
+async def url_loader(url: str) -> dict[str, list]:
+    """Асинхронно загружает данные расписания по URL.
 
     Args:
         url: URL API для получения данных.
@@ -65,15 +65,18 @@ def url_loader(url: str) -> dict[str, list]:
         LoadByURLError: Если не удалось загрузить данные по URL.
     """
     try:
-        response = get(url)
-        response.raise_for_status()
-        data = response.json()
-        return check_and_make_schedule_structure(data)
-    except HTTPError as e:
+        async with httpx.AsyncClient() as client:
+            response = await client.get(url)
+            response.raise_for_status()
+            data = response.json()
+            return check_and_make_schedule_structure(data)
+    except httpx.HTTPError as e:
         raise LoadByURLError(f"Failed to load schedule from URL: {e}")
 
 
-def load_schedule(url: str | None = None, data: dict | None = None) -> dict[str, list]:
+async def load_schedule(
+    url: str | None = None, data: dict | None = None
+) -> dict[str, list]:
     """Загружает данные расписания через API или из словаря.
 
     Args:
@@ -97,7 +100,7 @@ def load_schedule(url: str | None = None, data: dict | None = None) -> dict[str,
     elif url is not None and data is not None:
         raise URLOrDataOnlyError("Provide only one of url or data")
     elif url is not None:
-        return url_loader(url)
+        return await url_loader(url)
     elif data is not None:
         return check_and_make_schedule_structure(data)
     else:

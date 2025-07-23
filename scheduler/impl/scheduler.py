@@ -7,10 +7,10 @@ from .service import is_available as service_is_available
 
 
 class Scheduler(SchedulerInterface):
-    def __init__(
+    async def load_schedule_by_url_or_dict(
         self, url: str | None = None, data: dict[str, list[dict]] | None = None
     ) -> None:
-        self.schedule: dict[str, list] = load_schedule(url, data)
+        self.schedule: dict[str, list] = await load_schedule(url, data)
         self.validated_days = self.schedule["days"]
         self.validated_timeslots = self.schedule["timeslots"]
 

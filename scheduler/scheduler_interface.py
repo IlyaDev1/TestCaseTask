@@ -10,7 +10,7 @@ class SchedulerInterface(ABC):
     """
 
     @abstractmethod
-    def __init__(
+    async def load_schedule_by_url_or_dict(
         self,
         url: str | None = None,
         data: dict | None = None,
