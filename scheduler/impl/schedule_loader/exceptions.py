@@ -24,3 +24,7 @@ class DayStructureError(ValueError):
 
 class TimeSlotStructureError(ValueError):
     """Вызывается, если структура данных таймслота некорректна."""
+
+
+class DateDuplicateError(ValueError):
+    """Вызывается, если есть дублирование даты в расписании."""
