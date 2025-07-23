@@ -1,5 +1,7 @@
 from datetime import date, datetime, time
 
+from ..mappers import str_to_date, str_to_time
+from ..mappers.exceptions import DateFormatError, TimeFormatError
 from .exceptions import DayStructureError, TimeSlotStructureError
 
 
@@ -44,23 +46,25 @@ class ScheduleValidator:
 
             date_value = day.get("date")
             try:
-                parsed_date = datetime.strptime(date_value, "%Y-%m-%d").date()
-            except ValueError:
-                raise DayStructureError(f"In {day}, date must be in YYYY-MM-DD format")
+                parsed_date = str_to_date(date_value)
+            except DateFormatError as e:
+                raise DayStructureError(
+                    f"In {day}, date must be in YYYY-MM-DD format"
+                ) from e
 
             start_value = day.get("start")
             end_value = day.get("end")
             try:
-                start_time = datetime.strptime(start_value, "%H:%M").time()
-                end_time = datetime.strptime(end_value, "%H:%M").time()
+                start_time = str_to_time(start_value)
+                end_time = str_to_time(end_value)
                 if start_time >= end_time:
                     raise DayStructureError(
                         f"In {day}, start time must be before end time"
                     )
-            except ValueError:
+            except TimeFormatError as e:
                 raise DayStructureError(
                     f"In {day}, start and end must be in HH:MM format"
-                )
+                ) from e
 
             validated_days.append(
                 {
@@ -111,16 +115,16 @@ class ScheduleValidator:
             start_value = timeslot.get("start")
             end_value = timeslot.get("end")
             try:
-                start_time = datetime.strptime(start_value, "%H:%M").time()
-                end_time = datetime.strptime(end_value, "%H:%M").time()
+                start_time = str_to_time(start_value)
+                end_time = str_to_time(end_value)
                 if start_time >= end_time:
                     raise TimeSlotStructureError(
                         f"In {timeslot}, start time must be before end time"
                     )
-            except ValueError:
+            except TimeFormatError as e:
                 raise TimeSlotStructureError(
                     f"In {timeslot}, start and end must be in HH:MM format"
-                )
+                ) from e
 
             validated_timeslots.append(
                 {
