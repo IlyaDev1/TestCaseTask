@@ -27,12 +27,6 @@ from scheduler.tests.schedules.schedule_instances import (
 async def test_correct_load_by_url(httpx_mock: HTTPXMock):
     """Тест проверяет, что c url данные загружаются корректно."""
 
-    for _ in range(20):
-        print()
-    pprint(correct_schedule_by_url)
-    for _ in range(20):
-        print()
-
     httpx_mock.add_response(
         method="GET",
         url="https://ofc-test-01.tspb.su/test-task/",
@@ -43,10 +37,6 @@ async def test_correct_load_by_url(httpx_mock: HTTPXMock):
     await scheduler.load_schedule_by_url_or_dict(
         url="https://ofc-test-01.tspb.su/test-task/"
     )
-
-    pprint(scheduler.schedule)
-    for _ in range(20):
-        print()
 
     assert scheduler.schedule == correct_schedule_by_url
 

@@ -1,3 +1,5 @@
+import asyncio
+
 import pytest
 import pytest_asyncio
 from pytest_httpx import HTTPXMock
@@ -13,7 +15,15 @@ from scheduler.tests.schedules.schedule_instances import (
 )
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
+def event_loop():
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    yield loop
+    loop.close()
+
+
+@pytest_asyncio.fixture(scope="session")
 async def schedule_instance_by_url(httpx_mock: HTTPXMock):
     """Фикстура отдает асинхронно инициализированный объект расписания с URL."""
     mock_data: dict = correct_dirty_schedule_by_url
@@ -26,13 +36,13 @@ async def schedule_instance_by_url(httpx_mock: HTTPXMock):
     await scheduler.load_schedule_by_url_or_dict(
         url="https://ofc-test-01.tspb.su/test-task/"
     )
-    return scheduler
+    yield scheduler
 
 
 @pytest.fixture(scope="session")
 def schedule_instance():
     """Фикстура возвращает уже обработанный словарь расписания."""
-    return correct_schedule_by_url
+    yield correct_schedule_by_url
 
 
 @pytest_asyncio.fixture
