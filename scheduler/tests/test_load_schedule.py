@@ -20,34 +20,60 @@ from scheduler.tests.schedules.schedule_instances import (
 )
 
 
-def test_correct_load_by_url(schedule_instance_by_url: Scheduler):
+@pytest.mark.asyncio
+async def test_correct_load_by_url(httpx_mock: HTTPXMock):
     """Тест проверяет, что c url данные загружаются корректно."""
 
-    assert schedule_instance_by_url.schedule == correct_schedule_by_url
+    mock_data: dict = {
+        "days": correct_dirty_schedule["days"],
+        "timeslots": correct_dirty_schedule["timeslots"],
+    }
+
+    httpx_mock.add_response(
+        method="GET", url="https://ofc-test-01.tspb.su/test-task/", json=mock_data
+    )
+
+    scheduler = Scheduler()
+    await scheduler.load_schedule_by_url_or_dict(
+        url="https://ofc-test-01.tspb.su/test-task/"
+    )
+
+    assert scheduler.schedule == correct_schedule_by_url
 
 
-def test_correct_load_by_dict():
+@pytest.mark.asyncio
+async def test_correct_load_by_dict():
     """Тест проверяет, что c dict данные загружаются корректно."""
 
-    scheduler = Scheduler(data=correct_dirty_schedule)
+    scheduler = Scheduler()
+    await scheduler.load_schedule_by_url_or_dict(data=correct_dirty_schedule)
+
     assert scheduler.schedule == correct_schedule_by_dict
 
 
-def test_empty_args():
+@pytest.mark.asyncio
+async def test_empty_args():
     """Тест проверяет вызов ошибки EmptyLoadDataError."""
 
+    scheduler = Scheduler()
     with pytest.raises(EmptyLoadDataError, match="Either url or data must be provided"):
-        Scheduler()
+        await scheduler.load_schedule_by_url_or_dict()
 
 
-def test_url_and_data_exist():
+@pytest.mark.asyncio
+async def test_url_and_data_exist():
     """Тест проверяет вызов ошибки URLOrDataOnlyError."""
 
+    scheduler = Scheduler()
     with pytest.raises(URLOrDataOnlyError, match="Provide only one of url or data"):
-        Scheduler(url="https", data={"data": [dict()]})
+        await scheduler.load_schedule_by_url_or_dict(
+            url="https://ofc-test-01.tspb.su/test-task/",
+            data={"days": [], "timeslots": []},
+        )
 
 
-def test_load_by_url_error(httpx_mock: HTTPXMock):
+@pytest.mark.asyncio
+async def test_load_by_url_error(httpx_mock: HTTPXMock):
     """Тест проверяет вызов ошибки LoadByURLError."""
 
     httpx_mock.add_response(
@@ -56,12 +82,19 @@ def test_load_by_url_error(httpx_mock: HTTPXMock):
         status_code=404,
     )
 
+    scheduler = Scheduler()
     with pytest.raises(LoadByURLError, match="Failed to load schedule from URL:"):
-        Scheduler(url="https://ofc-test-01.tspb.su/test-task/")
+        await scheduler.load_schedule_by_url_or_dict(
+            url="https://ofc-test-01.tspb.su/test-task/"
+        )
 
 
-def test_timeslots_beyond_work_time():
+@pytest.mark.asyncio
+async def test_timeslots_beyond_work_time():
     """Тест проверяет вызов ошибки TimeSlotStructureError, если таймслот вне рабочего времени."""
 
+    scheduler = Scheduler()
     with pytest.raises(TimeSlotStructureError, match="outside of work hours"):
-        Scheduler(data=schedule_with_timeslot_beyond_work_time)
+        await scheduler.load_schedule_by_url_or_dict(
+            data=schedule_with_timeslot_beyond_work_time
+        )

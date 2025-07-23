@@ -1,4 +1,5 @@
 import pytest
+import pytest_asyncio
 from pytest_httpx import HTTPXMock
 
 from scheduler import Scheduler
@@ -12,30 +13,31 @@ from scheduler.tests.schedules.schedule_instances import (
 )
 
 
-@pytest.fixture(scope="function")
-def schedule_instance_by_url(httpx_mock: HTTPXMock):
-    """Фикстура отдает объект расписания с url."""
-
+@pytest.fixture
+async def schedule_instance_by_url(httpx_mock: HTTPXMock):
+    """Фикстура отдает асинхронно инициализированный объект расписания с URL."""
     mock_data: dict = correct_dirty_schedule_by_url
 
     httpx_mock.add_response(
         method="GET", url="https://ofc-test-01.tspb.su/test-task/", json=mock_data
     )
 
-    yield Scheduler(url="https://ofc-test-01.tspb.su/test-task/")
+    scheduler = Scheduler()
+    await scheduler.load_schedule_by_url_or_dict(
+        url="https://ofc-test-01.tspb.su/test-task/"
+    )
+    return scheduler
 
 
 @pytest.fixture(scope="session")
 def schedule_instance():
-    """Эта фисктура отдает уже готовый и обработанный объект расписания
-    Нужен, чтобы постоянно не вызывать долгий schedule_instance_by_url
-    """
-
-    yield correct_schedule_by_url
+    """Фикстура возвращает уже обработанный словарь расписания."""
+    return correct_schedule_by_url
 
 
-@pytest.fixture(scope="session")
-def schedule_instance_for_units():
-    """Эта фикстура будет отдавать schedule объект с известным обычным расписанием."""
-
-    yield Scheduler(data=correct_dirty_schedule)
+@pytest_asyncio.fixture
+async def schedule_instance_for_units():
+    """Фикстура отдает асинхронно инициализированный объект с обычным расписанием."""
+    scheduler = Scheduler()
+    await scheduler.load_schedule_by_url_or_dict(data=correct_dirty_schedule)
+    yield scheduler
