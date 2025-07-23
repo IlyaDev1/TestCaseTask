@@ -3,9 +3,13 @@ from pytest_httpx import HTTPXMock
 
 from scheduler import Scheduler
 from scheduler.tests.schedules.schedule_dirty_instances import (
+    correct_dirty_schedule,
     correct_dirty_schedule_by_url,
 )
-from scheduler.tests.schedules.schedule_instances import correct_schedule_by_url
+from scheduler.tests.schedules.schedule_instances import (
+    correct_schedule_by_dict,
+    correct_schedule_by_url,
+)
 
 
 @pytest.fixture(scope="function")
@@ -28,3 +32,10 @@ def schedule_instance():
     """
 
     yield correct_schedule_by_url
+
+
+@pytest.fixture(scope="session")
+def schedule_instance_for_units():
+    """Эта фикстура будет отдавать schedule объект с известным обычным расписанием."""
+
+    yield Scheduler(data=correct_dirty_schedule)
