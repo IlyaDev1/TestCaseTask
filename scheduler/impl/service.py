@@ -1,7 +1,7 @@
 from datetime import date
 from typing import List, Tuple
 
-from .mappers import str_to_date, time_to_str
+from .mappers import str_to_date, str_to_time, time_to_str
 
 
 def find_day_or_emtpy_list(
@@ -77,3 +77,34 @@ def get_free_slots(
         free_slots.append((time_to_str(current), time_to_str(day_end)))
 
     return free_slots
+
+
+def is_available(
+    date_value: str, start_time: str, end_time: str, days: list[dict], slots: list[dict]
+) -> bool:
+    """
+    Проверяет, доступен ли указанный временной промежуток на дату.
+
+    Args:
+        date_value: Дата в формате "YYYY-MM-DD"
+        start_time: Время начала в формате "HH:MM"
+        end_time: Время окончания в формате "HH:MM"
+        days: Список рабочих дней
+        slots: Список рабочих слотов
+
+    Returns:
+        True, если промежуток доступен, иначе False
+    """
+    free_slots = get_free_slots(days, slots, date_value)
+
+    start = str_to_time(start_time)
+    end = str_to_time(end_time)
+
+    for free_start_str, free_end_str in free_slots:
+        free_start = str_to_time(free_start_str)
+        free_end = str_to_time(free_end_str)
+
+        if free_start <= start and end <= free_end:
+            return True
+
+    return False
