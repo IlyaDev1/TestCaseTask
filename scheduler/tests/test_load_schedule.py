@@ -1,3 +1,5 @@
+from pprint import pprint
+
 import pytest
 from pytest_httpx import HTTPXMock
 
@@ -12,6 +14,7 @@ from scheduler.impl.schedule_loader.exceptions import (
 )
 from scheduler.tests.schedules.schedule_dirty_instances import (
     correct_dirty_schedule,
+    correct_dirty_schedule_by_url,
     schedule_with_timeslot_beyond_work_time,
 )
 from scheduler.tests.schedules.schedule_instances import (
@@ -24,19 +27,26 @@ from scheduler.tests.schedules.schedule_instances import (
 async def test_correct_load_by_url(httpx_mock: HTTPXMock):
     """Тест проверяет, что c url данные загружаются корректно."""
 
-    mock_data: dict = {
-        "days": correct_dirty_schedule["days"],
-        "timeslots": correct_dirty_schedule["timeslots"],
-    }
+    for _ in range(20):
+        print()
+    pprint(correct_schedule_by_url)
+    for _ in range(20):
+        print()
 
     httpx_mock.add_response(
-        method="GET", url="https://ofc-test-01.tspb.su/test-task/", json=mock_data
+        method="GET",
+        url="https://ofc-test-01.tspb.su/test-task/",
+        json=correct_dirty_schedule_by_url,
     )
 
     scheduler = Scheduler()
     await scheduler.load_schedule_by_url_or_dict(
         url="https://ofc-test-01.tspb.su/test-task/"
     )
+
+    pprint(scheduler.schedule)
+    for _ in range(20):
+        print()
 
     assert scheduler.schedule == correct_schedule_by_url
 
