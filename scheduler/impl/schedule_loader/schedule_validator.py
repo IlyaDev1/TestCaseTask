@@ -2,7 +2,7 @@ from datetime import date, datetime, time
 
 from ..mappers import str_to_date, str_to_time
 from ..mappers.exceptions import DateFormatError, TimeFormatError
-from .exceptions import DayStructureError, TimeSlotStructureError
+from .exceptions import DateDuplicateError, DayStructureError, TimeSlotStructureError
 
 
 class ScheduleValidator:
@@ -32,6 +32,7 @@ class ScheduleValidator:
             DayStructureError: Если структура или формат данных некорректны.
         """
         validated_days = []
+        unique_days = set()
         for day in days:
             if not isinstance(day, dict):
                 raise DayStructureError("Day must be a dictionary")
@@ -65,6 +66,11 @@ class ScheduleValidator:
                 raise DayStructureError(
                     f"In {day}, start and end must be in HH:MM format"
                 ) from e
+
+            if parsed_date in unique_days:
+                raise DateDuplicateError(f"Duplicate date found: {parsed_date}")
+            else:
+                unique_days.add(parsed_date)
 
             validated_days.append(
                 {

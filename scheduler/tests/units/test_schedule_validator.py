@@ -3,6 +3,7 @@ from datetime import date, time
 import pytest
 
 from scheduler.impl.schedule_loader.exceptions import (
+    DateDuplicateError,
     DayStructureError,
     TimeSlotStructureError,
 )
@@ -105,3 +106,13 @@ def test_timeslots_validator_valid():
 def test_timeslots_validator_invalid(bad_slot):
     with pytest.raises(TimeSlotStructureError):
         ScheduleValidator.timeslots_validator([bad_slot], {1})
+
+
+def test_duplicate_error():
+    days = [
+        {"id": 1, "date": "2024-10-10", "start": "10:00", "end": "22:00"},
+        {"id": 2, "date": "2024-10-10", "start": "10:00", "end": "22:00"},
+    ]
+
+    with pytest.raises(DateDuplicateError):
+        ScheduleValidator.days_validator(days)
