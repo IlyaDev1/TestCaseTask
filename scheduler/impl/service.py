@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, datetime, timedelta
 from typing import List, Tuple
 
 from .mappers import str_to_date, str_to_time, time_to_str
@@ -108,3 +108,31 @@ def is_available(
             return True
 
     return False
+
+
+def find_slot_for_duration(
+    days: list[dict], timeslots: list[dict], duration_minutes: int
+) -> tuple[str, str, str] | None:
+    """
+    Ищет первый подходящий свободный слот заданной длительности.
+
+    Args:
+        days: список словарей с данными о днях (id, date, start, end).
+        timeslots: список словарей с занятыми слотами (day_id, start, end).
+        duration_minutes: желаемая длительность слота в минутах.
+
+    Returns:
+        Кортеж (дата, время начала, время конца) или None, если слот не найден.
+    """
+    delta = timedelta(minutes=duration_minutes)
+
+    for day in days:
+        free_slots = get_free_slots(days, timeslots, day["date"].isoformat())
+        for start_str, end_str in free_slots:
+            start = datetime.strptime(start_str, "%H:%M")
+            end = datetime.strptime(end_str, "%H:%M")
+            if (end - start) >= delta:
+                finish_time = (start + delta).time()
+                return day["date"].isoformat(), start_str, time_to_str(finish_time)
+
+    return None

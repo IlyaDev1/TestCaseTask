@@ -1,6 +1,11 @@
 import pytest
 
-from scheduler.impl.service import get_busy_slots, get_free_slots, is_available
+from scheduler.impl.service import (
+    find_slot_for_duration,
+    get_busy_slots,
+    get_free_slots,
+    is_available,
+)
 
 
 @pytest.mark.parametrize(
@@ -61,3 +66,22 @@ def test_is_available_service(
 
     result = is_available(date_value, start_time, end_time, days, timeslots)
     assert result is expected
+
+
+@pytest.mark.parametrize(
+    "duration_minutes, expected",
+    [
+        (60, ("2024-10-10", "09:00", "10:00")),  # Первый слот 09:00–10:00
+        (90, ("2024-10-10", "09:00", "10:30")),  # Первый подходящий — на след. день
+        (300, ("2024-10-10", "12:00", "17:00")),  # 5 часов
+        (600, None),  # Слишком большая длительность
+    ],
+)
+def test_find_slot_for_duration(
+    duration_minutes, expected, schedule_instance_for_units
+):
+    days = schedule_instance_for_units.validated_days
+    timeslots = schedule_instance_for_units.validated_timeslots
+
+    result = find_slot_for_duration(days, timeslots, duration_minutes)
+    assert result == expected

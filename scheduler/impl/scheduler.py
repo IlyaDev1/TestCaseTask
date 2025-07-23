@@ -1,5 +1,6 @@
 from ..scheduler_interface import SchedulerInterface
 from .schedule_loader import load_schedule
+from .service import find_slot_for_duration as service_find_slot_for_duration
 from .service import get_busy_slots as service_get_busy_slots
 from .service import get_free_slots as service_get_free_slots
 from .service import is_available as service_is_available
@@ -32,6 +33,9 @@ class Scheduler(SchedulerInterface):
             self.validated_timeslots,
         )
 
-    def find_slot_for_duration(  # type: ignore
+    def find_slot_for_duration(
         self, duration_minutes: int = 10
-    ) -> tuple[str, str, str]: ...  # type: ignore
+    ) -> tuple[str, str, str] | None:
+        return service_find_slot_for_duration(
+            self.validated_days, self.validated_timeslots, duration_minutes
+        )
