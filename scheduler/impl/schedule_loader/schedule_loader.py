@@ -5,6 +5,7 @@ from .exceptions import (
     LoadByURLError,
     ScheduleKeysError,
     ScheduleValuesError,
+    SlotsIntersectionError,
     URLOrDataOnlyError,
 )
 from .schedule_validator import ScheduleValidator
@@ -48,6 +49,9 @@ def check_and_make_schedule_structure(data: dict) -> dict[str, list]:
     validated_days, validated_timeslots = ScheduleValidator.sort_schedule(
         validated_days, validated_timeslots
     )
+
+    if ScheduleValidator.is_find_intersections(validated_timeslots):
+        raise SlotsIntersectionError("found some intersections in timeslots")
 
     return {"days": validated_days, "timeslots": validated_timeslots}
 

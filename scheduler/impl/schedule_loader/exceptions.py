@@ -28,3 +28,7 @@ class TimeSlotStructureError(ValueError):
 
 class DateDuplicateError(ValueError):
     """Вызывается, если есть дублирование даты в расписании."""
+
+
+class SlotsIntersectionError(ValueError):
+    """Вызывется, если есть пересечения в слотах времени на один день."""
