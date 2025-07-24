@@ -116,3 +116,54 @@ def test_duplicate_error():
 
     with pytest.raises(DateDuplicateError):
         ScheduleValidator.days_validator(days)
+
+
+@pytest.mark.parametrize(
+    "slots, expected",
+    [
+        # Нет пересечений, один день
+        (
+            [
+                {"day_id": 1, "start": time(9, 0), "end": time(10, 0)},
+                {"day_id": 1, "start": time(10, 0), "end": time(11, 0)},
+                {"day_id": 1, "start": time(11, 0), "end": time(12, 0)},
+            ],
+            False,
+        ),
+        # Есть пересечение — один день
+        (
+            [
+                {"day_id": 1, "start": time(9, 0), "end": time(10, 30)},
+                {"day_id": 1, "start": time(10, 0), "end": time(11, 0)},
+            ],
+            True,
+        ),
+        # Слоты из разных дней — не пересекаются
+        (
+            [
+                {"day_id": 1, "start": time(9, 0), "end": time(10, 30)},
+                {"day_id": 2, "start": time(9, 0), "end": time(11, 0)},
+            ],
+            False,
+        ),
+        # Граничный случай — конец одного == начало другого
+        (
+            [
+                {"day_id": 1, "start": time(9, 0), "end": time(10, 0)},
+                {"day_id": 1, "start": time(10, 0), "end": time(11, 0)},
+            ],
+            False,
+        ),
+        # Пересекаются по одной минуте
+        (
+            [
+                {"day_id": 1, "start": time(9, 0), "end": time(10, 0)},
+                {"day_id": 1, "start": time(9, 59), "end": time(11, 0)},
+            ],
+            True,
+        ),
+    ],
+)
+def test_is_find_intersections(slots, expected):
+    result = ScheduleValidator.is_find_intersections(slots)
+    assert result is expected

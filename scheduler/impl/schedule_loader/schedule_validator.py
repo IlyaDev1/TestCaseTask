@@ -172,3 +172,24 @@ class ScheduleValidator:
             validated_timeslots, key=lambda ts: (ts["day_id"], ts["start"])
         )
         return sorted_days, sorted_timeslots
+
+    @staticmethod
+    def is_find_intersections(slots: list[dict]) -> bool:
+        """
+        Проверяет, есть ли пересечения между слотами внутри одного дня.
+
+        Args:
+            slots: список отсортированных слотов.
+
+        Returns:
+            True — если найдено пересечение, иначе False.
+        """
+        for i in range(len(slots) - 1):
+            current = slots[i]
+            next_ = slots[i + 1]
+
+            if current["day_id"] == next_["day_id"]:
+                if current["end"] > next_["start"]:
+                    return True
+
+        return False
