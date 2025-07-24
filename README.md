@@ -27,7 +27,7 @@ docker run --rm ilya407/scheduler_tests
 
 ```bash
 git clone https://github.com/IlyaDev1/TestCaseTask
-cd TestCase
+cd TestCaseTask
 ```
 
 #### 2. Убедитесь, что установлен Python 3.12+
