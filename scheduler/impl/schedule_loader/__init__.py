@@ -1,1 +1,1 @@
-from .schedule_loader import load_schedule
+from .schedule_loader import load_schedule_by_dict, load_schedule_by_url

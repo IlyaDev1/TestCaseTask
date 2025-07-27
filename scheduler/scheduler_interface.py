@@ -10,19 +10,25 @@ class SchedulerInterface(ABC):
     """
 
     @abstractmethod
-    async def load_schedule_by_url_or_dict(
-        self,
-        url: str | None = None,
-        data: dict | None = None,
-    ) -> None:
-        """Инициализирует класс данными расписания.
+    def __init__(self) -> None:
+        """Определяет внутреннюю структуру хранения данных в классе."""
+        pass
+
+    @abstractmethod
+    async def load_schedule_by_url(self, url: str) -> None:
+        """Забирает данные о расписании по url и сохраняет в объект.
 
         Args:
             url: URL API для получения данных о расписании.
-            data: Данные о расписании в формате {"days": [...], "timeslots": [...]}.
+        """
+        pass
 
-        Raises:
-            ValueError: Если не передан ни url, ни data.
+    @abstractmethod
+    def load_schedule_by_dict(self, data: dict) -> None:
+        """Забирает данные о расписании через словарь в аргументе и сохраняет в объекте.
+
+        Args:
+            data: Слоаврь для получения данных о расписании.
         """
         pass
 

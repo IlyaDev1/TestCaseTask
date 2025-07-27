@@ -6,9 +6,7 @@ from scheduler import Scheduler
 async def main():
     scheduler = Scheduler()
 
-    await scheduler.load_schedule_by_url_or_dict(
-        url="https://ofc-test-01.tspb.su/test-task/"
-    )
+    await scheduler.load_schedule_by_url(url="https://ofc-test-01.tspb.su/test-task/")
 
     # Получение всех занятых промежутков для даты 2025-02-15
     print(scheduler.get_busy_slots("2025-02-15"))

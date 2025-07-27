@@ -1,12 +1,10 @@
 import httpx
 
 from .exceptions import (
-    EmptyLoadDataError,
     LoadByURLError,
     ScheduleKeysError,
     ScheduleValuesError,
     SlotsIntersectionError,
-    URLOrDataOnlyError,
 )
 from .schedule_validator import ScheduleValidator
 
@@ -78,34 +76,38 @@ async def url_loader(url: str) -> dict[str, list]:
         raise LoadByURLError(f"Failed to load schedule from URL: {e}")
 
 
-async def load_schedule(
-    url: str | None = None, data: dict | None = None
-) -> dict[str, list]:
-    """Загружает данные расписания через API или из словаря.
+async def load_schedule_by_url(url: str) -> dict[str, list]:
+    """Загружает данные расписания через API.
 
     Args:
         url: URL API для получения данных о расписании.
-        data: Данные о расписании в формате {"days": [...], "timeslots": [...]}.
 
     Returns:
         Словарь с валидированными данными расписания.
 
     Raises:
-        EmptyLoadDataError: Если не передан ни url, ни data.
-        URLOrDataOnlyError: Если переданы оба аргумента: url и data.
         LoadByURLError: Если не удалось загрузить данные по URL.
         ScheduleKeysError: Если ключи словаря некорректны.
         ScheduleValuesError: Если days или timeslots не списки.
         DayStructureError: Если структура дней некорректна.
         TimeSlotStructureError: Если структура таймслотов некорректна.
     """
-    if url is None and data is None:
-        raise EmptyLoadDataError("Either url or data must be provided")
-    elif url is not None and data is not None:
-        raise URLOrDataOnlyError("Provide only one of url or data")
-    elif url is not None:
-        return await url_loader(url)
-    elif data is not None:
-        return check_and_make_schedule_structure(data)
-    else:
-        return {}
+    return await url_loader(url)
+
+
+def load_schedule_by_dict(data: dict) -> dict[str, list]:
+    """Загружает данные расписания через из словаря.
+
+    Args:
+        data: Данные о расписании в формате {"days": [...], "timeslots": [...]}.
+
+    Returns:
+        Словарь с валидированными данными расписания.
+
+    Raises:
+        ScheduleKeysError: Если ключи словаря некорректны.
+        ScheduleValuesError: Если days или timeslots не списки.
+        DayStructureError: Если структура дней некорректна.
+        TimeSlotStructureError: Если структура таймслотов некорректна.
+    """
+    return check_and_make_schedule_structure(data)

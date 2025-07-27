@@ -33,9 +33,7 @@ async def schedule_instance_by_url(httpx_mock: HTTPXMock):
     )
 
     scheduler = Scheduler()
-    await scheduler.load_schedule_by_url_or_dict(
-        url="https://ofc-test-01.tspb.su/test-task/"
-    )
+    await scheduler.load_schedule_by_url(url="https://ofc-test-01.tspb.su/test-task/")
     yield scheduler
 
 
@@ -46,8 +44,8 @@ def schedule_instance():
 
 
 @pytest_asyncio.fixture
-async def schedule_instance_for_units():
+def schedule_instance_for_units():
     """Фикстура отдает асинхронно инициализированный объект с обычным расписанием."""
     scheduler = Scheduler()
-    await scheduler.load_schedule_by_url_or_dict(data=correct_dirty_schedule)
+    scheduler.load_schedule_by_dict(data=correct_dirty_schedule)
     yield scheduler

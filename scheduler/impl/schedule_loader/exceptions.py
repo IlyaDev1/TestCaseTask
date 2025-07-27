@@ -1,11 +1,3 @@
-class EmptyLoadDataError(ValueError):
-    """Вызывается, если пользователь не передал ни URL, ни данные."""
-
-
-class URLOrDataOnlyError(ValueError):
-    """Вызывается, если пользователь передал одновременно URL и данные."""
-
-
 class LoadByURLError(ValueError):
     """Вызывается при ошибке загрузки данных по URL."""
 
